@@ -202,10 +202,11 @@ dns_type_print(nmsg_message_t msg,
 
 	memcpy(&rrtype, ptr, sizeof(rrtype));
 	s = wdns_rrtype_to_str(rrtype);
-	res = nmsg_strbuf_append(sb, "%s: %s (%u)%s",
-				 field->name,
-				 s ? s : "<UNKNOWN>",
-				 rrtype, endline);
+	if (s != NULL)
+		res = nmsg_strbuf_append(sb, "%s: %s (%u)%s", field->name, s, rrtype, endline);
+	else
+		res = nmsg_strbuf_append(sb, "%s: TYPE%u (%u)%s", field->name, rrtype, rrtype, endline);
+
 	return (res);
 }
 
@@ -222,7 +223,11 @@ dns_type_format(nmsg_message_t m,
 
 	memcpy(&rrtype, ptr, sizeof(rrtype));
 	s = wdns_rrtype_to_str(rrtype);
-	res = nmsg_strbuf_append(sb, "%s", s ? s : "<UNKNOWN>");
+	if (s != NULL)
+		res = nmsg_strbuf_append(sb, "%s", s);
+	else
+		res = nmsg_strbuf_append(sb, "TYPE%u", rrtype);
+
 	return (res);
 }
 
